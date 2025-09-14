@@ -15,7 +15,7 @@ replicas:
 
 images:
   - name: jhowssilva/conversao-distancia
-    newTag: v1.0.1
+    newTag: latest
 
 patches:
   - path: resource-patch.yaml
