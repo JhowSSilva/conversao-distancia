@@ -1,20 +1,18 @@
 FROM python:3.11-slim
 
+# Crie o usuário e grupo para rodar a aplicação
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
 WORKDIR /app
 
-# Create a non-root user
-RUN adduser --system --group appuser
-
-# Copy requirements and install dependencies
+# Copie requirements e test.sh para dentro da imagem
 COPY --chown=appuser:appuser requirements.txt ./requirements.txt
+COPY --chown=appuser:appuser test.sh ./test.sh
+
 RUN pip install -r requirements.txt
 
-# Copy the rest of the application code
 COPY --chown=appuser:appuser . .
 
-# Switch to the non-root user
 USER appuser
 
-EXPOSE 8000
-
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8000", "main:app"]
+CMD ["python", "main.py"]
