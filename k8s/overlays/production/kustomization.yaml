@@ -20,4 +20,5 @@ images:
 patches:
   - resource-patch.yaml
 labels:
-  environment: production
+  - pairs:
+      environment: production
