@@ -18,7 +18,7 @@ images:
     newTag: v1.0.0
 
 patches:
-  - resource-patch.yaml
+  - path: resource-patch.yaml
 labels:
   - pairs:
       environment: production
