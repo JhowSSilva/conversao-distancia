@@ -20,5 +20,5 @@ images:
 commonLabels:
   environment: staging
 
-patchesStrategicMerge:
-  - ingress-patch.yaml
+patches:
+  - path: ingress-patch.yaml
