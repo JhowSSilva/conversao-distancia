@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: conversao-distancia
-          image: jhowssilva/conversao-distancia:v.1.0.1 # ajuste se necessário
+          image: jhowssilva/conversao-distancia:v.0.0.1 # ajuste se necessário
           ports:
             - containerPort: 8080 # ajuste conforme sua aplicação
           readinessProbe:
