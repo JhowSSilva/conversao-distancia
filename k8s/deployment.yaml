@@ -1,20 +1,46 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: conversao-distancia
-  namespace: argocd
+  labels:
+    app: conversao-distancia
 spec:
-  project: default
-  source:
-    repoURL: 'https://github.com/JhowSSilva/conversao-distancia'
-    targetRevision: HEAD
-    path: k8s
-  destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: conversao-distancia
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+  replicas: 2
+  selector:
+    matchLabels:
+      app: conversao-distancia
+  template:
+    metadata:
+      labels:
+        app: conversao-distancia
+    spec:
+      containers:
+        - name: conversao-distancia
+          image: jhowssilva/conversao-distancia:v.1.0.1 # ajuste se necessário
+          ports:
+            - containerPort: 8080 # ajuste conforme sua aplicação
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: conversao-distancia
+spec:
+  selector:
+    app: conversao-distancia
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080 # ajuste conforme sua aplicação
+  type: ClusterIP
