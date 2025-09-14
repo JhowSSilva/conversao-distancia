@@ -16,31 +16,63 @@ spec:
     spec:
       containers:
         - name: conversao-distancia
-          image: jhowssilva/conversao-distancia:v.0.0.1 # ajuste se necessário
+          image: jhowssilva/conversao-distancia:latest  # Usando latest inicialmente
           ports:
-            - containerPort: 8080 # ajuste conforme sua aplicação
+            - containerPort: 5000  # Flask roda na porta 5000 por padrão
+          env:
+            - name: FLASK_ENV
+              value: "production"
           readinessProbe:
             httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
+              path: /
+              port: 5000
             initialDelaySeconds: 10
             periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: conversao-distancia
+  name: conversao-distancia-service
 spec:
   selector:
     app: conversao-distancia
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080 # ajuste conforme sua aplicação
+      targetPort: 5000
   type: ClusterIP
+---
+# Opcional: Ingress para acesso externo
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: conversao-distancia-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: conversao-distancia.local  # Ajuste conforme necessário
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: conversao-distancia-service
+                port:
+                  number: 80
