@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: conversao-distancia-project
+  namespace: argocd
+spec:
+  description: Projeto ArgoCD para a aplicação de conversão de distância
+  sourceRepos:
+    - 'https://github.com/JhowSSilva/conversao-distancia.git'
+  destinations:
+    - namespace: '*'
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+    - group: 'networking.k8s.io'
+      kind: Ingress
+  namespaceResourceWhitelist:
+    - group: ''
+      kind: Service
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+    - group: 'apps'
+      kind: Deployment
+    - group: 'apps'
+      kind: ReplicaSet
+    - group: ''
+      kind: Pod
+  roles:
+    - name: admin
+      description: Acesso administrativo ao projeto
+      policies:
+        - p, proj:conversao-distancia-project:admin, applications, *, conversao-distancia-project/*, allow
+        - p, proj:conversao-distancia-project:admin, repositories, *, *, allow
+      groups:
+        - argocd-admins

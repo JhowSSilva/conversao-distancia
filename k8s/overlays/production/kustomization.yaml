@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: conversao-distancia-production
+
+namespace: production
+
+resources:
+  - ../../base
+
+replicas:
+  - name: conversao-distancia
+    count: 3
+
+images:
+  - name: jhowssilva/conversao-distancia
+    newTag: v1.0.0
+
+patchesStrategicMerge:
+  - replica-patch.yaml
+  - resource-patch.yaml
+
+commonLabels:
+  environment: production

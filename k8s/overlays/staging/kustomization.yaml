@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: conversao-distancia-staging
+
+namespace: staging
+
+resources:
+  - ../../base
+
+replicas:
+  - name: conversao-distancia
+    count: 1
+
+images:
+  - name: jhowssilva/conversao-distancia
+    newTag: latest
+
+commonLabels:
+  environment: staging
+
+patchesStrategicMerge:
+  - ingress-patch.yaml
