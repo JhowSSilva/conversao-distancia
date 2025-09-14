@@ -18,8 +18,10 @@ COPY --chown=appuser:appuser requirements.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copiar código da aplicação
 COPY --chown=appuser:appuser . .
+
+# Criar /tmp com permissão de escrita universal
+RUN mkdir -p /tmp && chmod 1777 /tmp
 
 # Mudar para usuário não-root
 USER appuser
