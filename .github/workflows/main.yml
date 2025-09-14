@@ -25,11 +25,11 @@ jobs:
 
     - name: Test Docker image pull
       run: |
-        docker pull jhowssilva/conversao-distancia:v.1.0.1
+        docker pull jhowssilva/conversao-distancia:latest
 
     - name: Test Docker image startup
       run: |
-        docker run --rm jhowssilva/conversao-distancia:v.1.0.1 echo "Container OK"
+        docker run --rm jhowssilva/conversao-distancia:latest echo "Container OK"
 
     - name: Get AKS credentials
       run: az aks get-credentials --resource-group Bootcamp --name Bootcamp
