@@ -24,7 +24,7 @@ jobs:
 
       - name: Build Docker image (local)
         run: |
-          docker build -t jhowssilva/conversao-distancia:${{ steps.get_tag.outputs.tag }} .
+          docker build -t jhowssilva/conversao-distancia:${{ steps.get_tag.outputs.tag }} -f src/Dockerfile .
 
       - name: Test Docker image
         run: |
@@ -40,6 +40,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: src/Dockerfile
           push: true
           tags: |
             jhowssilva/conversao-distancia:${{ steps.get_tag.outputs.tag }}
