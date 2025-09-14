@@ -28,6 +28,8 @@ spec:
       kind: ReplicaSet
     - group: ''
       kind: Pod
+    - group: 'networking.k8s.io'
+      kind: Ingress
   roles:
     - name: admin
       description: Acesso administrativo ao projeto
