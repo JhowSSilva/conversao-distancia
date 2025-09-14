@@ -1,4 +1,4 @@
-name: Build, Push and Deploy
+name: Build and Push Docker Image
 
 on:
   push:
@@ -9,11 +9,9 @@ on:
 
 env:
   DOCKER_IMAGE: jhowssilva/conversao-distancia
-  AZURE_RESOURCE_GROUP: Bootcamp
-  AKS_CLUSTER: Bootcamp
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     
     steps:
@@ -60,28 +58,9 @@ jobs:
           docker pull ${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.version }}
           echo "Testing container startup..."
           docker run --rm ${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.version }} echo "Container test OK"
-      
-      - name: Log in to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-      
-      - name: Get AKS credentials
+          
+      - name: Summary
         run: |
-          az aks get-credentials --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER }}
-      
-      - name: Update deployment image
-        run: |
-          kubectl set image deployment/conversao-distancia \
-            conversao-distancia=${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.version }}
-          kubectl rollout status deployment/conversao-distancia --timeout=300s
-      
-      - name: Verify deployment
-        run: |
-          kubectl get pods -l app=conversao-distancia
-          kubectl describe deployment conversao-distancia
+          echo "🚀 Docker image built and pushed successfully!"
+          echo "📦 Image: ${{ env.DOCKER_IMAGE }}:${{ steps.version.outputs.version }}"
+          echo "🔄 ArgoCD will automatically sync and deploy the new version"
