@@ -5,9 +5,8 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 
 WORKDIR /app
 
-# Copie requirements e test.sh para dentro da imagem
+# Copie requirements para dentro da imagem
 COPY --chown=appuser:appuser requirements.txt ./requirements.txt
-COPY --chown=appuser:appuser test.sh ./test.sh
 
 RUN pip install -r requirements.txt
 
